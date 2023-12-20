@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import geopandas as gpd
 
 # Original data URI
 Original_dataUri = 'owid-covid-data (1).csv'
@@ -26,16 +27,18 @@ filtered_data = filtered_data.fillna(0)
 # Filter columns
 filtered_columns = [col for col in filtered_data.columns if col in column_names]
 filtered_df = filtered_data[filtered_columns]
+filtered_data.to_csv("filtered.csv")
 
 # Filter data for the year 2023
 data_2023 = filtered_df[filtered_df["date"].str.startswith("2023")]
 
 # Plot bar graph
 plt.figure(figsize=(12, 6))
-plt.bar(data_2023["location"], data_2023["total_cases_per_million"])
+plt.bar(data_2023["location"], data_2023["total_deaths_per_million"])
 plt.xlabel('Countries')
-plt.ylabel('Total Cases per Million (2023)')
-plt.title('Total Cases per Million in 2023 by Country')
+plt.ylabel('Total deaths per Million (2023)')
+plt.title('Total deaths per Million in 2023 by Country')
 plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
 plt.show()
+
