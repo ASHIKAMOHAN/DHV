@@ -20,57 +20,64 @@ region_colors = {
 Region = ["Africa", "North America", "South America", "Asia", "Middle East"]
 filtered_data = data[data["Region"].isin(Region)].dropna()
 filtered_data.to_csv("filtered.csv", index=False)
-
-# Subset data for specific years
 years_to_plot = np.arange(2000, 2016, 5)
 filtered_data_subset = filtered_data[filtered_data['Year'].isin(years_to_plot)]
+filtered_data_2015 = filtered_data[filtered_data['Year'] == 2015]
+grouped_df_adult = filtered_data_2015.groupby('Region')['Adult_mortality'].sum().reset_index()
+grouped_df_pop=filtered_data_2015.groupby('Region')['Population_mln'].sum().reset_index()
+sorted_df_pop = grouped_df_pop.sort_values(by='Population_mln')
 
-# Grouped DataFrame
-grouped_df = filtered_data.groupby('Region')[['Under_five_deaths', 'Infant_deaths']].sum().reset_index()
-filtered_df = filtered_data.sort_values(by='Population_mln', ascending=False)
 
 # Set up the subplots with a background color
-fig, axes = plt.subplots(2, 2, figsize=(15, 10), facecolor='#fceee9')  # Set the background color here
+fig, axes = plt.subplots(2, 2, figsize=(18, 13), facecolor='#fceee9')  
 
 # Title space for the description
-fig.suptitle('Infographic: Life Expectancy Analysis', fontsize=18, y=1.02)
+fig.suptitle('Infographic: Life Expectancy Analysis', fontsize=25, y=1.05, fontweight='bold')
+name_student_id = 'Name: Ashika Mohan Mungath\nStudent ID:'
+
+# Add the text below the title
+fig.text(0.5, 0.99, name_student_id, ha='center', fontsize=12,fontweight='bold')
+
+
 
 # Grouped barchart
 sns.barplot(x='Year', y='GDP_per_capita', hue='Region', data=filtered_data_subset, palette=region_colors, errorbar=None, ax=axes[0, 0])
-axes[0, 0].set_xlabel('Year')
-axes[0, 0].set_ylabel('GDP_per_capita')
-axes[0, 0].set_title('Grouped Barplot of GDP_per_capita Over the Years')
-axes[0, 0].legend().set_visible(False)  # Remove legend
+axes[0, 0].set_xlabel('Year',fontweight='bold',fontsize=14)
+axes[0, 0].set_ylabel('GDP per capita',fontweight='bold',fontsize=14)
+axes[0, 0].set_title('1.GDP per capita Over the Years by Region', fontweight='bold',y=1.04,fontsize=14) 
+axes[0, 0].legend().set_visible(False) 
 
-# Piechart
-explode = (0.1, 0, 0, 0, 0)
-wedges, texts, autotexts = axes[0, 1].pie(grouped_df['Under_five_deaths'], labels=None, autopct='%1.1f%%',
-                                           startangle=140, colors=[region_colors[region] for region in grouped_df['Region']],
-                                           pctdistance=1.15, explode=explode)  # Increase pctdistance to move the percentages outside
-axes[0, 1].set_title('Under-Five Deaths by Region')
-
-# Move the percentage labels outside the pie chart
+# Piechart for the year 2015 
+explode = (0.2, 0.1, 0.1, 0.1, 0.1)
+wedges, texts, autotexts = axes[0, 1].pie(grouped_df_adult['Adult_mortality'], labels=None, autopct='%1.1f%%',
+                                           startangle=140, colors=[region_colors[region] for region in grouped_df_adult['Region']],
+                                           pctdistance=1.15, explode=explode,radius=1.0)  
 for autotext in autotexts:
-    autotext.set_horizontalalignment('center')  # Center the labels inside the wedges
-    autotext.set_verticalalignment('center')  # Center the labels inside the wedges
-
+    autotext.set_fontsize(9)
+    autotext.set_fontweight('bold')
+axes[0, 1].set_title('2.Adult mortality by Region (Year 2015)', fontweight='bold', fontsize=14,y=1.04)
 
 # Line chart
 sns.lineplot(x='Year', y='Life_expectancy', hue='Region', data=filtered_data, palette=region_colors, marker='o', ax=axes[1, 0])
-axes[1, 0].set_xlabel('Year')
-axes[1, 0].set_ylabel('Life Expectancy')
-axes[1, 0].set_title('Life Expectancy Over the Years by Region')
-axes[1, 0].legend().set_visible(False)  # Remove legend
+axes[1, 0].set_xlabel('Year',fontweight='bold',fontsize=14)
+axes[1, 0].set_ylabel('Life Expectancy',fontweight='bold',fontsize=14)
+axes[1, 0].set_title('3.Life Expectancy Over the Years by Region', fontweight='bold',y=1.05,fontsize=14) 
+axes[1, 0].legend().set_visible(False)  
+
+
 
 # Horizontal bargraph
-axes[1, 1].barh(filtered_df['Region'], filtered_df['Population_mln'], color=[region_colors[region] for region in filtered_df['Region']], alpha=0.7)
-axes[1, 1].set_xlabel("Population [in Millions]")
-axes[1, 1].set_ylabel("Region")
-axes[1, 1].set_title("Population Distribution by Region")
+axes[1, 1].barh(sorted_df_pop['Region'], sorted_df_pop['Population_mln'], color=[region_colors[region] for region in sorted_df_pop['Region']], alpha=0.7)
+axes[1, 1].set_xlabel("Population [in Millions]", fontweight='bold',fontsize=14)
+axes[1, 1].set_ylabel("Region", fontweight='bold',fontsize=14)
+axes[1, 1].set_title("4.Population Distribution by Region", fontweight='bold', y=1.05, fontsize=14)
 
-# Add common legend between the first and second rows with a transparent background
-legend = fig.legend(handles, labels, loc='upper center', title='Region', bbox_to_anchor=(0.5, 0.5), ncol=5, facecolor='white', framealpha=1, edgecolor='none')  # Set edgecolor to 'none' to remove legend outline
-
+handles, labels = axes[0, 0].get_legend_handles_labels()
+legend = fig.legend(handles, labels, loc='upper center', title='Region', bbox_to_anchor=(0.5, 0.52), ncol=5, facecolor='white', framealpha=1,fontsize=10) 
+for text in legend.get_texts():
+    text.set_fontweight('bold')
+legend.get_title().set_fontweight('bold')
+    
 # Remove the spines (outlines) from the subplots
 for ax in axes.flatten():
     ax.spines['top'].set_visible(False)
@@ -78,13 +85,35 @@ for ax in axes.flatten():
     ax.spines['bottom'].set_visible(False)
     ax.spines['left'].set_visible(False)
 
-# Adjust layout
-plt.tight_layout(rect=[0, 0, 1, 1])  # Ensure there's space for the title
-plt.subplots_adjust(hspace=0.8)  # Adjust vertical space between subplots
+# Adjust layout with margins
+plt.tight_layout(rect=[0, 0, 1, 1])
+plt.subplots_adjust(hspace=0.65)
 
-# Add a description column
-fig.text(0.3, -0.05, 'Description: This infographic visualizes GDP per capita, under-five deaths, and life expectancy over the years for different regions.', ha='center', va='center', fontsize=10)
+
+
+description_text = """
+
+Visualisation 1: The grouped bar chart illustrates trends in GDP per capita from 2000 to 2015 across different regions, emphasizing economic disparities.
+It is evident from the graph that North America consistently exhibits the highest GDP, while Africa consistently shows the lowest GDP over the specified time period.
+
+Visualization 2: The pie chart depicts adult mortality rates across various regions in the year 2015.
+Notably, Africa records the highest value at 64.6%, whereas North America exhibits the lowest at 1.4%.
+
+Visualization 3: The line graph illustrates a consistent growth in life expectancy from 2000 to 2015.
+
+Visualization 4: The horizontal bar chart depicts population distribution, with dominance by Asia and Africa.
+
+In Conclusion,
+
+              * North America, boasting the highest GDP and lowest adult mortality, attains the peak life expectancy.
+              * Conversely, Africa, marked by the lowest GDP and highest adult mortality, faces the lowest life expectancy.
+              * The disparities in GDP and adult mortality contribute significantly to the variations in life expectancy, 
+                showcasing the impact of socio-economic factors on health outcomes across regions.
+"""
+
+fig.text(0.04, -0.33, description_text, ha='left', va='bottom', fontsize=13)
+
 
 # Save the plot as PNG with a transparent background
-plt.savefig("your-student-id.png", dpi=300, transparent=True)
+plt.savefig("ASHIKA-19291.png", dpi=300, bbox_inches='tight')
 plt.show()
