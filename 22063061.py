@@ -48,12 +48,12 @@ sorted_df_pop = grouped_df_pop.sort_values(by='Population_mln')
 fig, axes = plt.subplots(2, 2, figsize=(18, 13), facecolor='#fceee9')
 
 # Title space for the description
-fig.suptitle('Life Expectancy Analysis over the years by Region',
-             fontsize=25, y=1.05, fontweight='bold')
+fig.suptitle('Life Expectancy by Region over years(2000-2015)',
+             fontsize=30, y=1.05, fontweight='bold')
 name_student_id = 'Ashika Mohan Mungath\nStudent ID:22063061'
 
 # Add the text below the title
-fig.text(0.5, 0.99, name_student_id, ha='center',
+fig.text(0.5, .98, name_student_id, ha='center',
          fontsize=12, fontweight='bold')
 
 # Grouped barchart
@@ -134,8 +134,9 @@ description_text = """
 """
 
 # Add description text to the bottom of the figure
-fig.text(0.04, -0.33, description_text, ha='left',
+fig.text(0.04, -0.38, description_text, ha='left',
          va='bottom', fontsize=16, fontweight='bold')
 
 # Save the plot as PNG
 plt.savefig("22063061.png", dpi=300, bbox_inches='tight')
+
