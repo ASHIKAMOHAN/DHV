@@ -128,6 +128,7 @@ description_text = """
     In Conclusion,
         * North America, boasting the highest GDP and lowest adult mortality, attains the peak life expectancy.
         * Conversely, Africa, marked by the lowest GDP and highest adult mortality, faces the lowest life expectancy.
+        * Regions with larger populations tend to experience lower life expectancies compared to regions with smaller populations.
         * The disparities in GDP and adult mortality contribute significantly to the variations in life expectancy, 
         showcasing the impact of socio-economic factors on health outcomes across regions.
 """
